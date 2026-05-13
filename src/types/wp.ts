@@ -9,8 +9,23 @@ export interface Curso {
 	codigowpRegularPrice: string;
 }
 
-export interface GetCoursosResponse {
+export interface GetCursosResponse {
 	cursos: {
 		nodes: Curso[];
+	}
+}
+
+// Menus
+
+export interface MenuItem {
+	label: string;
+	uri: string;
+}
+
+export interface GetMenuResponse {
+	menu: {
+		menuItems: {
+			nodes: MenuItem[];
+		}
 	}
 }
