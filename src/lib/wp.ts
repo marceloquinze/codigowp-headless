@@ -1,5 +1,5 @@
 import { GraphQLClient, gql } from 'graphql-request';
-import { GetCursosResponse, GetMenuResponse } from '@/types/wp';
+import { GetCursosResponse, GetMenuResponse, GetPostResponse } from '@/types/wp';
 
 const endpoint = process.env.NEXT_PUBLIC_WORDPRESS_API_URL as string;
 
@@ -52,8 +52,8 @@ export async function getMenu(slug: string): Promise<GetMenuResponse> {
 	return await wpClient.request<GetMenuResponse>(query, { id: slug });
 }
 
-// Get all posts
-export async function getPosts() {
+// Get all posts (for Blog page)
+export async function getPosts(): Promise<GetPostResponse> {
 	const query = gql`
 		query GetPosts {
 			posts {
@@ -62,6 +62,15 @@ export async function getPosts() {
 					slug
 					excerpt
 					date
+					commentCount
+					categories {
+						nodes { name slug }
+					}
+					author {
+						node {
+							name
+						}
+					}
 					featuredImage {
 						node {
 							sourceUrl
@@ -76,3 +85,31 @@ export async function getPosts() {
 }
 
 // Get posts by slug
+export async function getPostsBySlug(slug: string): Promise<GetPostResponse> {
+	const query = gql`
+		query GetPostBySlug($id: ID!) {
+			post(id: $id, idType: SLUG) {
+				title
+				content
+				slug
+				commentCount
+				author {
+					node {
+						name
+						description
+						avatar {
+							url
+						}
+					}
+				}
+				categories {
+					nodes {
+						name
+					}
+				}
+			}
+		}	
+	`;
+
+	return await wpClient.request<GetPostResponse>(query, { id: slug });
+}

@@ -29,3 +29,35 @@ export interface GetMenuResponse {
 		}
 	}
 }
+
+// Posts
+
+export interface PostListItem {
+	title: string;
+	slug: string;
+	excerpt: string;
+	date: string;
+	author: {
+		node: {
+			name: string;
+		}
+	};
+	featuredImage?: {
+		node: {
+			sourceUrl: string;
+		}
+	};
+	commentCount: number;
+	categories: {
+		nodes: {
+			name: string;
+			slug: string;
+		}[]
+	};
+}
+
+export interface GetPostResponse {
+	posts: {
+		nodes: PostListItem[];
+	}
+}
