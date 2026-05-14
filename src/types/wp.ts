@@ -32,32 +32,69 @@ export interface GetMenuResponse {
 
 // Posts
 
-export interface PostListItem {
-	title: string;
-	slug: string;
-	excerpt: string;
-	date: string;
-	author: {
-		node: {
-			name: string;
-		}
-	};
-	featuredImage?: {
-		node: {
-			sourceUrl: string;
-		}
-	};
-	commentCount: number;
-	categories: {
-		nodes: {
-			name: string;
-			slug: string;
-		}[]
-	};
+// export interface PostListItem {
+// 	title: string;
+// 	slug: string;
+// 	excerpt: string;
+// 	date: string;
+// 	author: {
+// 		node: {
+// 			name: string;
+// 		}
+// 	};
+// 	featuredImage?: {
+// 		node: {
+// 			sourceUrl: string;
+// 		}
+// 	};
+// 	commentCount: number;
+// 	categories: {
+// 		nodes: {
+// 			name: string;
+// 			slug: string;
+// 		}[]
+// 	};
+// }
+
+// export interface GetPostResponse {
+// 	posts: {
+// 		nodes: PostListItem[];
+// 	}
+// }
+
+
+// Posts 
+
+export interface RawPostNode {
+  title: string;
+  slug: string;
+  excerpt: string;
+  date: string;
+  commentCount: number | null;
+  author?: {
+    node: { name: string };
+  };
+  categories?: {
+    nodes: { name: string; slug: string }[];
+  };
+  featuredImage?: {
+    node: { sourceUrl: string };
+  };
 }
 
-export interface GetPostResponse {
-	posts: {
-		nodes: PostListItem[];
-	}
+export interface RawGetPostsResponse {
+  posts: {
+    nodes: RawPostNode[];
+  };
+}
+
+export interface CleanPost {
+  title: string;
+  slug: string;
+  excerpt: string;
+  date: string;
+  commentCount: number;
+  authorName: string;
+  categories: { name: string; slug: string }[];
+  featuredImage: string | null;
 }

@@ -1,5 +1,5 @@
 import { GraphQLClient, gql } from 'graphql-request';
-import { GetCursosResponse, GetMenuResponse, GetPostResponse } from '@/types/wp';
+import { GetCursosResponse, GetMenuResponse, RawGetPostsResponse, CleanPost } from '@/types/wp';
 
 const endpoint = process.env.NEXT_PUBLIC_WORDPRESS_API_URL as string;
 
@@ -53,7 +53,8 @@ export async function getMenu(slug: string): Promise<GetMenuResponse> {
 }
 
 // Get all posts (for Blog page)
-export async function getPosts(): Promise<GetPostResponse> {
+// All data already formatted to pass on to views
+export async function getPosts(): Promise<CleanPost[]> {
 	const query = gql`
 		query GetPosts {
 			posts {
@@ -81,35 +82,46 @@ export async function getPosts(): Promise<GetPostResponse> {
 		}
 	`;
 
-	return await wpClient.request(query);
+	const data = await wpClient.request<RawGetPostsResponse>(query);
+
+	return data.posts.nodes.map((post) => ({
+		title: post.title,
+		slug: post.slug,
+		excerpt: post.excerpt,
+		date: post.date,
+		commentCount: post.commentCount ?? 0,
+		authorName: post.author?.node?.name || 'Autor Desconhecido',
+		categories: post.categories?.nodes || [],
+		featuredImage: post.featuredImage?.node?.sourceUrl || null,		
+	}));
 }
 
 // Get posts by slug
-export async function getPostsBySlug(slug: string): Promise<GetPostResponse> {
-	const query = gql`
-		query GetPostBySlug($id: ID!) {
-			post(id: $id, idType: SLUG) {
-				title
-				content
-				slug
-				commentCount
-				author {
-					node {
-						name
-						description
-						avatar {
-							url
-						}
-					}
-				}
-				categories {
-					nodes {
-						name
-					}
-				}
-			}
-		}	
-	`;
+// export async function getPostsBySlug(slug: string): Promise<GetPostResponse> {
+// 	const query = gql`
+// 		query GetPostBySlug($id: ID!) {
+// 			post(id: $id, idType: SLUG) {
+// 				title
+// 				content
+// 				slug
+// 				commentCount
+// 				author {
+// 					node {
+// 						name
+// 						description
+// 						avatar {
+// 							url
+// 						}
+// 					}
+// 				}
+// 				categories {
+// 					nodes {
+// 						name
+// 					}
+// 				}
+// 			}
+// 		}	
+// 	`;
 
-	return await wpClient.request<GetPostResponse>(query, { id: slug });
-}
+// 	return await wpClient.request<GetPostResponse>(query, { id: slug });
+// }
