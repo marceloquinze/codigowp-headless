@@ -1,5 +1,6 @@
 import Image from "next/image";
 import parse from 'html-react-parser';
+import DOMPurify from 'isomorphic-dompurify';
 
 import DateBox from "@/components/DateBox";
 import { getPosts } from "@/lib/wp";
@@ -9,7 +10,7 @@ import PostMetaInfo from "@/components/PostMetaInfo";
 export default async function Blog(){
 	const posts = await getPosts();
 	// const posts = data.posts.nodes;
-	// console.log(posts);
+	console.log(posts);
 
 	return (
 		<main className="max-w-6xl mx-auto blog">
@@ -36,13 +37,13 @@ export default async function Blog(){
 								)}
 								<div className="meta-data flex gap-8 items-center">
 									<DateBox dateString={post.date} />
-									<h2 className="font-semibold text-3xl">{post.title}</h2>
+									<h2 className="font-semibold text-3xl text-gray-700 hover:text-lime-400">{post.title}</h2>
 								</div>
 								<PostMetaInfo 
 									authorName={post.authorName} 
 									categories={post.categories} 
 									commentCount={post.commentCount} />
-								<div className="excerpt text-gray-800 line-clamp-2 text-md leading-relaxed">{parse(post.excerpt)}</div>
+								<div className="excerpt text-gray-700 transition delay-150 duration-300 ease-in-out hover:text-lime-400  line-clamp-2 text-md leading-relaxed">{parse(DOMPurify.sanitize(post.excerpt))}</div>
 							</article>
 						</Link>
 					))}

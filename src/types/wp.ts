@@ -69,6 +69,7 @@ export interface RawPostNode {
   title: string;
   slug: string;
   excerpt: string;
+  content: string;
   date: string;
   commentCount: number | null;
   author?: {
@@ -92,9 +93,15 @@ export interface CleanPost {
   title: string;
   slug: string;
   excerpt: string;
+  content: string;
   date: string;
   commentCount: number;
   authorName: string;
   categories: { name: string; slug: string }[];
   featuredImage: string | null;
+}
+
+// Posts by slug
+export interface RawGetPostBySlugResponse {
+  post: RawPostNode | null;
 }

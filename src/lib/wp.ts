@@ -1,5 +1,5 @@
 import { GraphQLClient, gql } from 'graphql-request';
-import { GetCursosResponse, GetMenuResponse, RawGetPostsResponse, CleanPost } from '@/types/wp';
+import { GetCursosResponse, GetMenuResponse, RawGetPostsResponse, CleanPost, RawGetPostBySlugResponse } from '@/types/wp';
 
 const endpoint = process.env.NEXT_PUBLIC_WORDPRESS_API_URL as string;
 
@@ -88,6 +88,7 @@ export async function getPosts(): Promise<CleanPost[]> {
 		title: post.title,
 		slug: post.slug,
 		excerpt: post.excerpt,
+		content: post.content,
 		date: post.date,
 		commentCount: post.commentCount ?? 0,
 		authorName: post.author?.node?.name || 'Autor Desconhecido',
@@ -97,31 +98,52 @@ export async function getPosts(): Promise<CleanPost[]> {
 }
 
 // Get posts by slug
-// export async function getPostsBySlug(slug: string): Promise<GetPostResponse> {
-// 	const query = gql`
-// 		query GetPostBySlug($id: ID!) {
-// 			post(id: $id, idType: SLUG) {
-// 				title
-// 				content
-// 				slug
-// 				commentCount
-// 				author {
-// 					node {
-// 						name
-// 						description
-// 						avatar {
-// 							url
-// 						}
-// 					}
-// 				}
-// 				categories {
-// 					nodes {
-// 						name
-// 					}
-// 				}
-// 			}
-// 		}	
-// 	`;
+export async function getPostBySlug(slug: string): Promise<CleanPost | null> {
+	const query = gql`
+		query GetPostBySlug($id: ID!) {
+			post(id: $id, idType: SLUG) {
+				title
+				slug
+				content
+				date
+				commentCount
+				author {
+					node {
+						name
+						description
+						avatar {
+							url
+						}
+					}
+				}
+				categories {
+					nodes {
+						name
+						slug
+					}
+				}
+				featuredImage {
+					node {
+						sourceUrl
+					}
+				}
+			}
+		}	
+	`;
 
-// 	return await wpClient.request<GetPostResponse>(query, { id: slug });
-// }
+	const data = await wpClient.request<RawGetPostBySlugResponse>(query, { id: slug });
+
+	if(!data.post) return null;
+
+	return {
+		title: data.post.title,
+		slug: data.post.slug,
+		excerpt: data.post.excerpt,
+		content: data.post.content,
+		date: data.post.date,
+		commentCount: data.post.commentCount ?? 0,
+		authorName: data.post.author?.node?.name || 'Sem Autor',
+		categories: data.post.categories?.nodes || [],
+		featuredImage: data.post.featuredImage?.node?.sourceUrl || null
+	};
+}
