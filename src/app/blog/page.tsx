@@ -18,35 +18,42 @@ export default async function Blog(){
 			<div className="flex gap-8">
 				<div className="w-3/4 flex flex-col gap-16">
 					{posts.map((post) => (
-						<Link
-							href={`/blog/${post.slug}`}
-							key={post.slug}
-							className="hover:no-underline"
-						>
+
 							<article key={post.slug} className="flex flex-col gap-8 group">
-								{post.featuredImage && (
-									<div className="relative w-full h-96 mb-4 overflow-hidden rounded-xl">
-										<Image 
-											src={post.featuredImage} 
-											alt={post.title} 
-											fill
-											sizes="(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 50vw"
-            								priority={true}
-											className="object-cover"/>
-									</div>
-								)}
-								<div className="meta-data flex gap-8 items-center">
+								<Link
+									href={`/blog/${post.slug}`}
+									key={post.slug}
+									className="hover:no-underline"
+								>								
+									{post.featuredImage && (
+										<div className="relative w-full h-96 mb-4 overflow-hidden rounded-xl">
+											<Image 
+												src={post.featuredImage} 
+												alt={post.title} 
+												fill
+												sizes="(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 50vw"
+												priority={true}
+												className="object-cover"/>
+										</div>
+									)}
+								</Link>
+								<div className="meta-data flex gap-16 items-center">
 									<DateBox dateString={post.date} />
-									<h2 className="font-semibold text-3xl text-gray-700 hover:text-lime-400">{post.title}</h2>
+										<Link
+											href={`/blog/${post.slug}`}
+											key={post.slug}
+											className="hover:no-underline"
+										>									
+											<h2 className="transition delay-150 duration-300 ease-in-out font-semibold text-3xl hover:text-lime-600">{post.title}</h2>
+										</Link>
 								</div>
 								<PostMetaInfo 
 									authorName={post.authorName} 
 									categories={post.categories} 
 									commentCount={post.commentCount} />
-								<div className="excerpt text-gray-700 transition delay-150 duration-300 ease-in-out hover:text-lime-400  line-clamp-2 text-md leading-relaxed">{parse(DOMPurify.sanitize(post.excerpt))}</div>
+								<div className="excerpt text-gray-700 transition delay-150 duration-300 ease-in-out line-clamp-2 text-md leading-relaxed">{parse(DOMPurify.sanitize(post.excerpt))}</div>
 							</article>
-						</Link>
-					))}
+						))}
 				</div>
 				<div className="w-1/4">
 					Sidebar

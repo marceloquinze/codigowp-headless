@@ -15,11 +15,11 @@ export default function DateBox({dateString, isSimple}: DateBoxProps) {
 
 	return (
 		isSimple ? (
-			<div className="flex flex-col  text-lime-400 rounded-md shrink-0">
-				<span className="text-xl font-bold leading-none mb-3">{fullDate}</span>
+			<div className="simple-date">
+				<span>{fullDate}</span>
 			</div>
 		): (
-			<div className="flex flex-col items-center justify-center text-lime-400 rounded-md w-16 shrink-0">
+			<div className="full-date">
 				<span className="text-7xl font-bold leading-none mb-3">{day}</span>
 				<span className="text-sm leading-none">{month.toLocaleUpperCase()}</span>
 			</div>

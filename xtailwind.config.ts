@@ -1,5 +1,4 @@
 import type { Config } from "tailwindcss";
-import typography from "@tailwindcss/typography";
 
 const config: Config = {
 	content: [
@@ -9,9 +8,13 @@ const config: Config = {
 	],
 	theme: {
 		extend: {
+			fontFamily: {
+				sans: ["var(--font-montserrat)", "sans-serif"],
+				serif: ["var(--font-merriweather)", "serif"],
+			}
 		},
 	},
-	plugins: [typography],
+	plugins: [],
 };
 
 export default config;
